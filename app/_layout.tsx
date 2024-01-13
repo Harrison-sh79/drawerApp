@@ -1,56 +1,32 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { Drawer } from 'expo-router/drawer';
+import { Ionicons } from '@expo/vector-icons';
+import customDrawerContent from '../components/customDrawerContent';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
+export default function _layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-  );
+    <Drawer screenOptions={{
+      drawerLabelStyle: {
+        marginLeft: -20
+      },
+      drawerActiveBackgroundColor: 'gray',
+      drawerActiveTintColor: 'white'
+    }}
+    drawerContent={customDrawerContent}
+    >
+      <Drawer.Screen name='home' options={{
+        title: 'Home',
+        drawerLabel: 'Home',
+        drawerIcon: ({ color, size }) => (
+          <Ionicons name="home-sharp" size={size} color={color} />
+        )
+      }} />
+      <Drawer.Screen name='index' options={{
+        title: 'About',
+        drawerLabel: 'About',
+        drawerIcon: ({ color, size }) => (
+          <Ionicons name='ios-information-circle-outline' size={size} color={color} />
+        )
+      }} />
+    </Drawer>
+  )
 }
